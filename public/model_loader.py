@@ -116,7 +116,8 @@ def predict(image_path, model, print_image=0, topk=5):
         prints top probabilities and indices
     '''
     model.eval()
-    model.to('cuda')
+    if(torch.cuda.is_available()):
+        model.to('cuda')
     
     image = process_image(image_path)
     
@@ -124,8 +125,11 @@ def predict(image_path, model, print_image=0, topk=5):
         imshow(image) 
         
     # Convert image to PyTorch tensor first
-    image = torch.from_numpy(image).type(torch.cuda.FloatTensor)
-    
+    if(torch.cuda.is_available()):
+        image = torch.from_numpy(image).type(torch.cuda.FloatTensor)
+    else:
+        image = torch.from_numpy(image).type(torch.FloatTensor)
+
     # Returns a new tensor with a dimension of size one inserted at the specified position.
     image = image.unsqueeze(0)
     with torch.no_grad():
